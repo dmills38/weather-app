@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // weather API key
 
-    const API_KEY = '';
+    const API_KEY = 'f50db64639d7d5a939b5bbd1d2fcc518';
 
     // function to build API URL
 
