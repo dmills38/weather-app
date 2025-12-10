@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function getWeatherUrl(city) {
         // opens openWeatherMap API URL for current weather
 
-        return `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`;
+        return `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=imperial`;
 
     }
 
@@ -53,11 +53,36 @@ document.addEventListener('DOMContentLoaded', function() {
                 // check if city was found
                 if (data.cod === 200) {
                     // display weather info
-                    resultDiv.innerHTML = `
-                        <h2>${data.name}, ${data.sys.country}</h2>
-                        <p>Temperature: ${data.main.temp} °C</p>
-                        <p>Weather: ${data.weather[0].description}</p>
-                        `;
+                    // helper to capitalize properly (first letter)
+function capitalize(str) {
+    if (!str) return '';
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+// inside your success branch, build a nicer card with an icon
+const iconCode = data.weather[0].icon; // e.g. "01d", "04n"
+const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@4x.png`;
+
+// update result area with icon, big temp, description
+resultDiv.innerHTML = `
+    <div class="weather-card" role="region" aria-live="polite" aria-label="Weather results for ${data.name}">
+        <h2>${data.name}, ${data.sys.country}</h2>
+        <img
+            class="weather-icon"
+            src="${iconUrl}"
+            alt="${capitalize(data.weather[0].description)}"
+            width="120"
+            height="120"
+        >
+        <div class="temp-large">${Math.round(data.main.temp)} °F</div>
+        <div class="weather-desc">${capitalize(data.weather[0].description)}</div>
+        <div class="small-meta">
+            <p>Feels like: ${Math.round(data.main.feels_like)} °F</p>
+            <p>Humidity: ${data.main.humidity}%</p>
+        </div>
+    </div>
+`;
+
                 
                 } else {
                     // city not found or other error
